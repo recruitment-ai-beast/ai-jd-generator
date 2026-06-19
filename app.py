@@ -262,6 +262,13 @@ st.markdown("""
 
 with st.sidebar:
     st.markdown("### ⚙️ Configuration")
+
+    if st.button("🔄 Reset All Settings", use_container_width=True):
+        st.session_state.tone = "Professional"
+        st.session_state.word_count = 500
+        st.session_state.generate_variations = False
+        st.rerun()
+
     st.markdown("---")
 
     tone = st.selectbox(
@@ -471,10 +478,13 @@ with output_col:
 
             # Word count metric
             word_c = len(jd_content.split())
+            target = st.session_state.word_count
+            diff = abs(word_c - target)
+            status = "✅ On target" if diff < 100 else "⚠️ Off target"
             st.markdown(f"""
             <div style="display:flex; gap:1rem; margin-bottom:1rem; align-items:center;">
                 <span class="success-badge">✓ Generated</span>
-                <span style="color:#94A3B8; font-size:0.8rem;">~{word_c} words</span>
+                <span style="color:#94A3B8; font-size:0.8rem;">~{word_c} words (target: {target}) {status}</span>
             </div>
             """, unsafe_allow_html=True)
 
