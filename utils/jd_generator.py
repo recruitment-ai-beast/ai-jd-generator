@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def build_model(api_key: str) -> ChatGroq:
     """Initialise Groq LLM."""
     return ChatGroq(
-        model="gemma2-9b-it",
+        model="llama-3.1-8b-instant",
         temperature=0.7,
         max_tokens=2000,
         api_key=api_key
