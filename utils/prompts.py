@@ -2,7 +2,12 @@
 Prompt templates for JD generation.
 All prompt logic lives here — isolated from business logic.
 """
-
+TONE_INSTRUCTIONS = {
+    "Professional": "formal, polished, corporate-neutral language",
+    "Startup": "energetic, informal, mission-driven, exclamation points okay",
+    "Casual": "conversational, friendly, like talking to a friend",
+    "Corporate": "highly formal, traditional, structured business language"
+}
 SYSTEM_PROMPT = """\
 You are an expert HR consultant and recruitment copywriter.
 
@@ -81,7 +86,8 @@ Job Title: {job_title}
 Responsibilities: {responsibilities}
 Skills: {skills}
 Experience: {experience_level}
-Tone: {tone}
+Tone: {tone} — Write the ENTIRE JD in a distinctly {tone} voice. 
+{tone} tone means: {tone_instruction}
 
 Make it distinct — different opening, different emphasis, same core requirements.
 Label it clearly as {variation_label}.\
