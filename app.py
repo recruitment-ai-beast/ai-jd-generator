@@ -26,7 +26,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+if "theme_mode" not in st.session_state:
+    st.session_state.theme_mode = "Dark"
 # --------------------------------------------------
 # Styling
 # --------------------------------------------------
@@ -214,7 +215,27 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-
+if st.session_state.theme_mode == "Light":
+    st.markdown("""
+    <style>
+        .stApp { background-color: #F8FAFC !important; color: #0F172A !important; }
+        section[data-testid="stSidebar"] { background-color: #FFFFFF !important; }
+        .card, .output-box, .metric-card, .history-item { 
+            background: #FFFFFF !important; 
+            border-color: #E2E8F0 !important;
+            color: #0F172A !important;
+        }
+        .stTextInput label, .stTextArea label, .stSelectbox label {
+            color: #0F172A !important;
+        }
+        .stTextInput > div > div > input,
+        .stTextArea > div > div > textarea {
+            background-color: #FFFFFF !important;
+            color: #0F172A !important;
+            border-color: #CBD5E1 !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 # --------------------------------------------------
 # Session State Init
 # --------------------------------------------------
@@ -261,6 +282,10 @@ st.markdown("""
 # --------------------------------------------------
 
 with st.sidebar:
+    theme_mode = st.radio("Theme", ["Dark", "Light"], horizontal=True, 
+                        index=0 if st.session_state.theme_mode == "Dark" else 1)
+    st.session_state.theme_mode = theme_mode
+    st.markdown("---")
     st.markdown("### ⚙️ Configuration")
 
     if st.button("🔄 Reset All Settings", use_container_width=True):
