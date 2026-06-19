@@ -16,35 +16,32 @@ def export_as_txt(content: str) -> bytes:
 
 
 def export_as_pdf(content: str, job_title: str) -> Optional[bytes]:
-    """Export JD as PDF using fpdf2."""
     try:
         from fpdf import FPDF
-
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.set_font("Helvetica", size=11)
+        
+        # Strip non-latin1 chars (emojis break fpdf2)
+        safe_content = content.encode('latin-1', 'ignore').decode('latin-1')
+        safe_title = job_title.encode('latin-1', 'ignore').decode('latin-1')
+        
         pdf.set_font("Helvetica", "B", 16)
-        pdf.cell(0, 10, job_title, ln=True, align="C")
+        pdf.cell(0, 10, safe_title, ln=True, align="C")
         pdf.ln(5)
         pdf.set_font("Helvetica", size=11)
-
-        for line in content.split("\n"):
+        
+        for line in safe_content.split("\n"):
             line = line.strip()
             if not line:
                 pdf.ln(4)
-            elif line.startswith("##"):
-                pdf.set_font("Helvetica", "B", 13)
-                pdf.multi_cell(0, 8, line.replace("#", "").strip())
-                pdf.set_font("Helvetica", size=11)
             else:
                 pdf.multi_cell(0, 7, line)
-
-        return pdf.output()
-
+        
+        return bytes(pdf.output())
     except Exception as e:
         logger.error(f"PDF export failed: {e}")
         return None
-
 
 def export_as_docx(content: str, job_title: str) -> Optional[bytes]:
     """Export JD as DOCX using python-docx."""
