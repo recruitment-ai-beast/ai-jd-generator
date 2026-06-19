@@ -8,6 +8,7 @@ from typing import Optional
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from utils.prompts import SYSTEM_PROMPT, JD_GENERATION_PROMPT, VARIATION_PROMPT
+from utils.prompts import SYSTEM_PROMPT, JD_GENERATION_PROMPT, VARIATION_PROMPT, TONE_INSTRUCTIONS
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +41,14 @@ def generate_jd(
         model = build_model(api_key)
 
         prompt = JD_GENERATION_PROMPT.format(
-            job_title=job_title,
-            responsibilities=responsibilities,
-            skills=skills,
-            experience_level=experience_level,
-            company_culture=company_culture or "Not specified",
-            tone=tone,
-            word_count=word_count
+        job_title=job_title,
+        responsibilities=responsibilities,
+        skills=skills,
+        experience_level=experience_level,
+        company_culture=company_culture or "Not specified",
+        tone=tone,
+        tone_instruction=TONE_INSTRUCTIONS.get(tone, "professional"),
+        word_count=word_count
         )
 
         response = model.invoke([
