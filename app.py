@@ -390,6 +390,8 @@ with input_col:
 # --------------------------------------------------
 
 if generate_btn:
+    
+    st.session_state.generated_jd = None  # clear stale JD before regenerating
     # Validate API key
     key_valid, key_error = validate_api_key(GROQ_API_KEY or "")
     if not key_valid:
