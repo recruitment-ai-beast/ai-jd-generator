@@ -30,6 +30,9 @@ Rules:
 JD_GENERATION_PROMPT = """\
 Generate a complete, professional job description using the inputs below.
 
+Important: use only the current inputs. Do not copy from a previous generation,
+and do not assume the role is a Python/software role unless the input says so.
+
 Job Title: {job_title}
 Key Responsibilities: {responsibilities}
 Required Skills: {skills}
