@@ -4,6 +4,8 @@ LangChain + Groq integration lives here.
 """
 
 import logging
+import time
+import streamlit as st
 from typing import Optional
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -12,7 +14,7 @@ from utils.prompts import SYSTEM_PROMPT, JD_GENERATION_PROMPT, VARIATION_PROMPT,
 
 logger = logging.getLogger(__name__)
 
-
+@st.cache_resource
 def build_model(api_key: str) -> ChatGroq:
     """Initialise Groq LLM."""
     return ChatGroq(
@@ -62,7 +64,6 @@ def generate_jd(
         logger.error(f"JD generation failed: {e}")
         return None
 
-
 def generate_variations(
     api_key: str,
     job_title: str,
@@ -80,6 +81,7 @@ def generate_variations(
 
     for label in ["Version A", "Version B", "Version C"]:
         try:
+            time.sleep(1.5)  # avoid rate limit
             prompt = VARIATION_PROMPT.format(
                 variation_label=label,
                 job_title=job_title,

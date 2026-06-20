@@ -20,25 +20,24 @@ def export_as_pdf(content: str, job_title: str) -> Optional[bytes]:
         from fpdf import FPDF
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_font("Helvetica", size=11)
-        
-        # Strip non-latin1 chars (emojis break fpdf2)
-        safe_content = content.encode('latin-1', 'ignore').decode('latin-1')
-        safe_title = job_title.encode('latin-1', 'ignore').decode('latin-1')
-        
+        pdf.set_auto_page_break(auto=True, margin=15)
+
+        safe_title = job_title.encode('latin-1', 'replace').decode('latin-1')
+        safe_content = content.encode('latin-1', 'replace').decode('latin-1')
+
         pdf.set_font("Helvetica", "B", 16)
         pdf.cell(0, 10, safe_title, ln=True, align="C")
         pdf.ln(5)
         pdf.set_font("Helvetica", size=11)
-        
+
         for line in safe_content.split("\n"):
             line = line.strip()
-            if not line:
-                pdf.ln(4)
-            else:
-                pdf.multi_cell(0, 7, line)
-        
-        return bytes(pdf.output())
+            pdf.ln(4) if not line else pdf.multi_cell(0, 7, line)
+
+        output = pdf.output(dest='S')
+        if isinstance(output, str):
+            return output.encode('latin-1')
+        return bytes(output)
     except Exception as e:
         logger.error(f"PDF export failed: {e}")
         return None

@@ -213,6 +213,11 @@ st.markdown("""
         color: #050816 !important;
         font-weight: 600 !important;
     }
+    label[data-testid="stWidgetLabel"] p {
+    color: #E6F1FF !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 if st.session_state.theme_mode == "Light":
@@ -259,6 +264,17 @@ def init_session_state():
             st.session_state[key] = value
 
 init_session_state()
+# Process pending actions BEFORE any widgets render
+if st.session_state.get("_do_reset", False):
+    st.session_state.tone = "Professional"
+    st.session_state.word_count = 500
+    st.session_state.generate_variations = False
+    st.session_state["_do_reset"] = False
+
+if "_pending_reuse" in st.session_state:
+    st.session_state.generated_jd = st.session_state.pop("_pending_reuse")
+    if "editable_jd" in st.session_state:
+        del st.session_state["editable_jd"]
 
 # --------------------------------------------------
 # API Key
@@ -289,10 +305,8 @@ with st.sidebar:
     st.markdown("### ⚙️ Configuration")
 
     if st.button("🔄 Reset All Settings", use_container_width=True):
-        st.session_state.tone = "Professional"
-        st.session_state.word_count = 500
-        st.session_state.generate_variations = False
-        st.rerun()
+    st.session_state["_do_reset"] = True
+    st.rerun()
 
     st.markdown("---")
 
@@ -422,8 +436,10 @@ with input_col:
 # --------------------------------------------------
 
 if generate_btn:
-    
-    st.session_state.generated_jd = None  # clear stale JD before regenerating
+    st.session_state.generated_jd = None
+    if "editable_jd" in st.session_state:
+        del st.session_state["editable_jd"]  # force widget to accept new value
+
     # Validate API key
     key_valid, key_error = validate_api_key(GROQ_API_KEY or "")
     if not key_valid:
@@ -462,7 +478,7 @@ if generate_btn:
             "timestamp": datetime.now().strftime("%H:%M · %d %b"),
             "content": jd
         })
-
+        
         # Generate variations if toggled
         if st.session_state.generate_variations:
             with st.spinner("Generating A/B/C variations..."):
@@ -474,6 +490,7 @@ if generate_btn:
                     experience_level=experience_level,
                     tone=tone
                 )
+        st.rerun()  # refresh sidebar metrics immediately
     else:
         st.error(
             "We're having trouble generating your job description right now. "
@@ -629,7 +646,7 @@ with output_col:
 
                         with col_reuse:
                             if st.button("♻️ Reuse", key=f"reuse_{i}"):
-                                st.session_state.generated_jd = item["content"]
+                                st.session_state["_pending_reuse"] = item["content"]
                                 st.rerun()
 
                 if st.button("🗑️ Clear History", use_container_width=True):
