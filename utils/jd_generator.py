@@ -88,7 +88,8 @@ def generate_variations(
                 responsibilities=responsibilities,
                 skills=skills,
                 experience_level=experience_level,
-                tone=tone
+                tone=tone,
+                tone_instruction=TONE_INSTRUCTIONS.get(tone, "professional")
             )
 
             response = model.invoke([

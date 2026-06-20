@@ -34,9 +34,7 @@ def export_as_pdf(content: str, job_title: str) -> Optional[bytes]:
             line = line.strip()
             pdf.ln(4) if not line else pdf.multi_cell(0, 7, line)
 
-        output = pdf.output(dest='S')
-        if isinstance(output, str):
-            return output.encode('latin-1')
+        output = pdf.output()
         return bytes(output)
     except Exception as e:
         logger.error(f"PDF export failed: {e}")
