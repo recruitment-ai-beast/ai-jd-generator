@@ -84,6 +84,8 @@ Return EXACTLY in this format — no extra commentary:
 VARIATION_PROMPT = """\
 Generate {variation_label} of this job description with a different angle:
 
+Important: make each variation materially different in opening, emphasis, and wording.
+
 Original inputs:
 Job Title: {job_title}
 Responsibilities: {responsibilities}
