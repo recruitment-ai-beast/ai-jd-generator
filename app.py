@@ -214,7 +214,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
     label[data-testid="stWidgetLabel"] p {
-    color: #E6F1FF !important;
+    color: #008080 !important;
     opacity: 1 !important;
     font-weight: 500 !important;
 }
