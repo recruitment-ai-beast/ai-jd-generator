@@ -305,8 +305,8 @@ with st.sidebar:
     st.markdown("### ⚙️ Configuration")
 
     if st.button("🔄 Reset All Settings", use_container_width=True):
-    st.session_state["_do_reset"] = True
-    st.rerun()
+        st.session_state["_do_reset"] = True
+        st.rerun()
 
     st.markdown("---")
 
